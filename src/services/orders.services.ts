@@ -1,11 +1,23 @@
 import Order from '../models/order.model';
 import {PaginationResult} from "../types/pagination.types";
 
-const getPaginatedOrders = async (page: number, limit: number): Promise<PaginationResult> => {
+interface SortCriteria {
+    [key: string]: 1 | -1;
+}
+
+const getPaginatedOrders = async (
+    page: number,
+    limit: number,
+    sortBy: string = 'defaultField',
+    sortOrder: 'asc' | 'desc' = 'asc'
+): Promise<PaginationResult> => {
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
 
     const results: PaginationResult = {currentData: []};
+
+    let sortObject: SortCriteria = {};
+    sortObject[sortBy] = sortOrder === 'asc' ? 1 : -1;
 
     if (endIndex < await Order.countDocuments().exec()) {
         results.next = {
@@ -21,9 +33,10 @@ const getPaginatedOrders = async (page: number, limit: number): Promise<Paginati
         };
     }
 
-    results.currentData = await Order.find().limit(limit).skip(startIndex).exec();
+    results.currentData = await Order.find().sort(sortObject).limit(limit).skip(startIndex).exec();
 
     return results;
 };
 
 export default {getPaginatedOrders};
+

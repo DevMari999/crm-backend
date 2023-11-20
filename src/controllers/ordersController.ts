@@ -5,8 +5,10 @@ export const getOrders = async (req: Request, res: Response): Promise<void> => {
     try {
         const page = parseInt(req.query.page as string) || 1;
         const limit = parseInt(req.query.limit as string) || 25;
+        const sortBy = req.query.sortBy as string || 'defaultField';
+        const sortOrder = req.query.sortOrder as 'asc' | 'desc' || 'asc';
 
-        const orders = await OrdersService.getPaginatedOrders(page, limit);
+        const orders = await OrdersService.getPaginatedOrders(page, limit, sortBy, sortOrder);
 
         res.json(orders);
     } catch (error) {
