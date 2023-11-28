@@ -8,4 +8,5 @@ export interface PaginationResult  {
         limit: number;
     };
     currentData: any[];
+    totalPages: number;
 }

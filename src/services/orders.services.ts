@@ -9,15 +9,30 @@ const getPaginatedOrders = async (
     page: number,
     limit: number,
     sortBy: string = 'defaultField',
-    sortOrder: 'asc' | 'desc' = 'asc'
+    sortOrder: 'asc' | 'desc' = 'asc',
+    searchCriteria: any = {}
 ): Promise<PaginationResult> => {
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
 
-    const results: PaginationResult = {currentData: []};
+    const results: PaginationResult = {
+        currentData: [],
+    totalPages: 0};
 
     let sortObject: SortCriteria = {};
     sortObject[sortBy] = sortOrder === 'asc' ? 1 : -1;
+
+    let queryObject: any = {};
+    for (const field in searchCriteria) {
+        if (['name', 'surname', 'email', 'phone'].includes(field)) {
+            queryObject[field] = { $regex: searchCriteria[field], $options: 'i' };
+        } else {
+            queryObject[field] = searchCriteria[field];
+        }
+    }
+    const totalDocuments = await Order.countDocuments(queryObject).exec();
+    const totalPages = Math.ceil(totalDocuments / limit);
+    results.totalPages = totalPages;
 
     if (endIndex < await Order.countDocuments().exec()) {
         results.next = {
@@ -33,10 +48,11 @@ const getPaginatedOrders = async (
         };
     }
 
-    results.currentData = await Order.find().sort(sortObject).limit(limit).skip(startIndex).exec();
+    results.currentData = await Order.find(queryObject).sort(sortObject).limit(limit).skip(startIndex).exec();
 
     return results;
 };
+
 
 export default {getPaginatedOrders};
 
