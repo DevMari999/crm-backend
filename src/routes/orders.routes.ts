@@ -1,9 +1,11 @@
 import express, { Router } from 'express';
-import {getOrders, getUniqueFieldValues} from '../controllers/ordersController';
+import {getOrders, updateOrder, addComment} from "../controllers/ordersController";
 
 const router: Router = express.Router();
 
 router.get('/orders', getOrders);
-router.get('/unique-values/:fieldName', getUniqueFieldValues);
 
+router.post('/orders/:id/comments', addComment);
+
+router.put('/orders/:id', updateOrder);
 export default router;

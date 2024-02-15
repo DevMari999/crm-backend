@@ -1,58 +1,57 @@
+import { buildQueryObject, buildSortObject } from '../utils/queryBuilder';
+import {IOrder} from "../types/order.types";
+import mongoose from "mongoose";
 import Order from '../models/order.model';
-import {PaginationResult} from "../types/pagination.types";
+import { IComment } from "../types/order.types";
 
-interface SortCriteria {
-    [key: string]: 1 | -1;
-}
-
-const getPaginatedOrders = async (
-    page: number,
-    limit: number,
-    sortBy: string = 'defaultField',
-    sortOrder: 'asc' | 'desc' = 'asc',
-    searchCriteria: any = {}
-): Promise<PaginationResult> => {
-    const startIndex = (page - 1) * limit;
-    const endIndex = page * limit;
-
-    const results: PaginationResult = {
-        currentData: [],
-    totalPages: 0};
-
-    let sortObject: SortCriteria = {};
-    sortObject[sortBy] = sortOrder === 'asc' ? 1 : -1;
-
-    let queryObject: any = {};
-    for (const field in searchCriteria) {
-        if (['name', 'surname', 'email', 'phone'].includes(field)) {
-            queryObject[field] = { $regex: searchCriteria[field], $options: 'i' };
-        } else {
-            queryObject[field] = searchCriteria[field];
-        }
+export const addCommentToOrder = async (orderId: mongoose.Types.ObjectId | string, comment: IComment): Promise<IOrder | null> => {
+    console.log(`Adding comment to order ${orderId}:`, comment);
+    try {
+        const updatedOrder = await Order.findByIdAndUpdate(
+            orderId,
+            { $push: { comments: comment } },
+            { new: true }
+        );
+        console.log(`Updated order with new comment:`, updatedOrder);
+        return updatedOrder;
+    } catch (error) {
+        console.error(`Error adding comment to order ${orderId}:`, error);
+        throw error;
     }
-    const totalDocuments = await Order.countDocuments(queryObject).exec();
-    const totalPages = Math.ceil(totalDocuments / limit);
-    results.totalPages = totalPages;
-
-    if (endIndex < await Order.countDocuments().exec()) {
-        results.next = {
-            page: page + 1,
-            limit: limit
-        };
-    }
-
-    if (startIndex > 0) {
-        results.previous = {
-            page: page - 1,
-            limit: limit
-        };
-    }
-
-    results.currentData = await Order.find(queryObject).sort(sortObject).limit(limit).skip(startIndex).exec();
-
-    return results;
 };
 
 
-export default {getPaginatedOrders};
+interface PaginationResult {
+    currentData: IOrder[];
+    totalPages: number;
+}
+
+export const getPaginatedOrders = async (
+    page: number,
+    limit: number,
+    sortBy: string,
+    sortOrder: 'asc' | 'desc',
+    searchCriteria: any
+): Promise<PaginationResult> => {
+    const startIndex = (page - 1) * limit;
+    const queryObject = buildQueryObject(searchCriteria);
+    const sortObject = buildSortObject(sortBy, sortOrder);
+
+    const totalDocuments = await Order.countDocuments(queryObject);
+    const totalPages = Math.ceil(totalDocuments / limit);
+
+    const currentData = await Order.find(queryObject).sort(sortObject).limit(limit).skip(startIndex);
+
+    return { currentData, totalPages };
+};
+
+
+export const updateOrderById = async (orderId: mongoose.Types.ObjectId | string, updateData: Partial<IOrder>) => {
+    try {
+        const updatedOrder = await Order.findByIdAndUpdate(orderId, updateData, { new: true });
+        return updatedOrder;
+    } catch (error) {
+        throw error;
+    }
+};
 

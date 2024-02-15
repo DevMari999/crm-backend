@@ -2,22 +2,31 @@ import mongoose, {Schema} from "mongoose";
 
 import {IOrder} from "../types/order.types";
 
+const commentSchema = new Schema({
+        managerId: { type: String },
+        comment: { type: String, required: true },
+        createdAt: { type: Date, default: Date.now }
+});
+
 const orderSchema = new Schema<IOrder>(
     {
-        name: { type: String },
-        surname: { type: String},
-        email: { type: String},
-        phone: { type: String},
-        age: { type: Number },
-        course: { type: String},
-        course_format: { type: String },
-        course_type: { type: String},
-        sum: { type: Number, default: null },
-        already_paid: { type: Boolean, default: null },
-        created_at: { type: Date },
-        utm: { type: String, default: '' },
-        msg: { type: String, default: null },
-        status: { type: String, default: null }
+        name: {type: String},
+        surname: {type: String},
+        email: {type: String},
+        phone: {type: String},
+        age: {type: Number},
+        course: {type: String},
+        course_format: {type: String},
+        course_type: {type: String},
+        sum: {type: Number, default: 0},
+        already_paid: {type: Boolean, default: null},
+        created_at: {type: Date},
+        utm: {type: String, default: ''},
+        msg: {type: String, default: null},
+        status: {type: String, default: null},
+        group: {type: String, default: ''},
+        manager: {type: String, default: ''},
+            comments: [commentSchema]
     }
 )
 

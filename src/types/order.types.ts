@@ -1,4 +1,10 @@
 import  { Document } from "mongoose";
+
+export interface IComment {
+    managerId?: string;
+    comment: string;
+    createdAt: Date;
+}
 export interface IOrder extends Document {
     name: string;
     surname: string;
@@ -14,4 +20,7 @@ export interface IOrder extends Document {
     utm: string;
     msg: string | null;
     status: string | null;
+    group: string | null;
+    manager: string | null;
+    comments: IComment[];
 }
