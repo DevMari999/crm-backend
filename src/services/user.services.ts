@@ -1,10 +1,22 @@
 import User from '../models/user.model';
-import { IUser } from '../types/user.types';
+import {IUser} from '../types/user.types';
 
-const getUsersWithRoleManager = async (): Promise<IUser[]> => {
+const getUsersWithRoleManager = async (page: number, limit: number): Promise<{ users: IUser[], total: number }> => {
     try {
-        const users = await User.find({ role: 'manager' });
-        return users;
+        const skip = (page - 1) * limit;
+        const total = await User.countDocuments({role: 'manager'});
+        const users = await User.find({role: 'manager'}).skip(skip).limit(limit);
+        return {users, total};
+    } catch (error) {
+        throw error;
+    }
+};
+
+
+const getUserById = async (id: string): Promise<IUser | null> => {
+    try {
+        const user = await User.findById(id);
+        return user;
     } catch (error) {
         throw error;
     }
@@ -12,4 +24,5 @@ const getUsersWithRoleManager = async (): Promise<IUser[]> => {
 
 export default {
     getUsersWithRoleManager,
+    getUserById,
 };

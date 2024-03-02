@@ -1,10 +1,11 @@
-import  { Document } from "mongoose";
+import {Document} from "mongoose";
 
 export interface IComment {
     managerId?: string;
     comment: string;
     createdAt: Date;
 }
+
 export interface IOrder extends Document {
     name: string;
     surname: string;

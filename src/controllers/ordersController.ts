@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import {Request, Response} from 'express';
 import * as OrdersService from '../services/orders.services';
 
 export const addComment = async (req: Request, res: Response): Promise<void> => {
@@ -25,13 +25,16 @@ export const addComment = async (req: Request, res: Response): Promise<void> => 
 
 export const getOrders = async (req: Request, res: Response): Promise<void> => {
     try {
+        const managerId = req.query.managerId as string;
         const page = parseInt(req.query.page as string) || 1;
         const limit = parseInt(req.query.limit as string) || 25;
         const sortBy = (req.query.sortBy as string) || 'defaultField';
         const sortOrder = (req.query.sortOrder as 'asc' | 'desc') || 'asc';
         const searchCriteria = req.query.searchCriteria ? JSON.parse(req.query.searchCriteria as string) : {};
         console.log("Parsed Search Criteria:", searchCriteria);
-        const orders = await OrdersService.getPaginatedOrders(page, limit, sortBy, sortOrder, searchCriteria);
+
+
+        const orders = await OrdersService.getPaginatedOrders(page, limit, sortBy, sortOrder, searchCriteria, managerId);
 
         res.json(orders);
     } catch (error) {
@@ -56,3 +59,26 @@ export const updateOrder = async (req: Request, res: Response): Promise<void> =>
         res.status(500).send(error.message);
     }
 };
+
+
+export const deleteComment = async (req: Request, res: Response): Promise<void> => {
+    const orderId = req.params.orderId;
+    const commentId = req.params.commentId;
+
+    try {
+        const updatedOrder = await OrdersService.deleteCommentFromOrder(orderId, commentId);
+
+        if (!updatedOrder) {
+            console.log(`Order with ID ${orderId} not found.`);
+            res.status(404).send('Order not found');
+        } else {
+            console.log(`Comment ${commentId} deleted from order ${orderId} successfully.`);
+            res.json(updatedOrder);
+        }
+    } catch (error) {
+        console.error(`Error in deleteComment controller for order ${orderId}:`, error);
+        res.status(500).send(error.message);
+    }
+};
+
+

@@ -7,7 +7,7 @@ interface AuthResponse {
 }
 
 export const registerUser = async (name: string, email: string, lastname: string): Promise<AuthResponse> => {
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({email});
     if (existingUser) {
         throw new Error('User already exists');
     }
@@ -26,5 +26,8 @@ export const registerUser = async (name: string, email: string, lastname: string
 
     await newUser.save();
 
-    return { message: 'Manager registered successfully. Please check your email to set your password.', userId: newUser._id.toString() };
+    return {
+        message: 'Manager registered successfully. Please check your email to set your password.',
+        userId: newUser._id.toString()
+    };
 };

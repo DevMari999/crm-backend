@@ -1,4 +1,4 @@
-export interface PaginationResult  {
+export interface PaginationResult {
     next?: {
         page: number;
         limit: number;
