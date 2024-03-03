@@ -1,5 +1,11 @@
 import express, {Router} from 'express';
-import {getOrders, updateOrder, addComment, deleteComment} from "../controllers/ordersController";
+import {
+    getOrders,
+    updateOrder,
+    addComment,
+    deleteComment,
+    getStatusStatisticsController, getOrdersByMonthController, getCourseTypeStatisticsController
+} from "../controllers/ordersController";
 
 const router: Router = express.Router();
 
@@ -11,5 +17,10 @@ router.put('/orders/:id', updateOrder);
 
 router.delete('/orders/:orderId/comments/:commentId', deleteComment);
 
+router.get('/orders/status-statistics', getStatusStatisticsController);
+
+router.get('/orders-by-month', getOrdersByMonthController);
+
+router.get('/course-type-statistics', getCourseTypeStatisticsController);
 
 export default router;

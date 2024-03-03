@@ -1,5 +1,10 @@
 import {Request, Response} from 'express';
 import * as OrdersService from '../services/orders.services';
+import {
+    getCourseTypeStatisticsService,
+    getOrdersByMonth,
+    getStatusStatisticsService
+} from "../services/orders.services";
 
 export const addComment = async (req: Request, res: Response): Promise<void> => {
     console.log(`Received request to add comment to order with ID ${req.params.id}:`, req.body);
@@ -82,3 +87,33 @@ export const deleteComment = async (req: Request, res: Response): Promise<void> 
 };
 
 
+export const getStatusStatisticsController = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const statistics = await getStatusStatisticsService();
+        res.json(statistics);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+};
+
+
+
+
+export const getOrdersByMonthController = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const ordersByMonth = await getOrdersByMonth();
+        res.status(200).json(ordersByMonth);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+
+export const getCourseTypeStatisticsController = async (req: Request, res: Response) => {
+    try {
+        const courseTypeStatistics = await getCourseTypeStatisticsService();
+        res.json(courseTypeStatistics);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
