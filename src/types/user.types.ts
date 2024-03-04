@@ -9,6 +9,8 @@ export interface IUser extends Document {
     passwordResetToken: string;
     passwordResetExpires: Date;
     role: string;
+    activationToken: string;
+    activationTokenExpires: Date;
 }
 
 

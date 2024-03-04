@@ -117,3 +117,12 @@ export const getCourseTypeStatisticsController = async (req: Request, res: Respo
         res.status(500).json({ error: error.message });
     }
 };
+
+export const getAllOrders = async (req: Request, res: Response) => {
+    try {
+        const orders = await OrdersService.fetchAllOrders();
+        res.json(orders);
+    } catch (error) {
+        res.status(500).send({ message: 'Failed to fetch orders', error: error.message });
+    }
+};

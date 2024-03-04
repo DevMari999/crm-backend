@@ -10,6 +10,8 @@ const UserSchema: Schema = new Schema({
     passwordResetToken: {type: String},
     passwordResetExpires: {type: Date},
     role: {type: String, default: 'manager'},
+    activationToken: { type: String },
+    activationTokenExpires: { type: Date },
 });
 
 export default mongoose.model<IUser>('User', UserSchema);

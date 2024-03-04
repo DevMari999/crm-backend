@@ -78,3 +78,4 @@ export const getOrdersByMonth = async (): Promise<any> => {
         throw new Error(`Failed to get orders by month: ${error.message}`);
     }
 };
+

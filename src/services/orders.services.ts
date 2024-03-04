@@ -3,7 +3,7 @@ import {IOrder} from "../types/order.types";
 import mongoose from "mongoose";
 import Order from '../models/order.model';
 import {IComment} from "../types/order.types";
-import {getCourseTypeStatistics, getStatusStatistics} from "../repositories/orders.repository";
+import { getCourseTypeStatistics, getStatusStatistics} from "../repositories/orders.repository";
 
 
 export const addCommentToOrder = async (orderId: mongoose.Types.ObjectId | string, comment: IComment): Promise<IOrder | null> => {
@@ -127,5 +127,16 @@ export const getCourseTypeStatisticsService = async () => {
         return courseTypeStatistics;
     } catch (error) {
         throw new Error(`Failed to fetch course type statistics: ${error.message}`);
+    }
+};
+
+
+export const fetchAllOrders = async () => {
+    try {
+        const orders = await Order.find({});
+        return orders;
+    } catch (error) {
+        console.error('Failed to fetch orders:', error);
+        throw error;
     }
 };
