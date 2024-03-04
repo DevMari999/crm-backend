@@ -51,19 +51,34 @@ export const getPaginatedOrders = async (
     searchCriteria: any,
     managerId?: string
 ): Promise<PaginationResult> => {
+    console.log("Received parameters:", { page, limit, sortBy, sortOrder, searchCriteria, managerId });
+
     const startIndex = (page - 1) * limit;
+    console.log("Start Index:", startIndex);
+
     const queryObject = buildQueryObject(searchCriteria);
+    console.log("Query Object:", queryObject);
+
     const sortObject = buildSortObject(sortBy, sortOrder);
+    console.log("Sort Object:", sortObject);
+
     if (managerId) {
         queryObject.manager = managerId;
+        console.log("Manager ID:", managerId);
     }
+
     const totalDocuments = await Order.countDocuments(queryObject);
+    console.log("Total Documents:", totalDocuments);
+
     const totalPages = Math.ceil(totalDocuments / limit);
+    console.log("Total Pages:", totalPages);
 
     const currentData = await Order.find(queryObject).sort(sortObject).limit(limit).skip(startIndex);
 
-    return {currentData, totalPages};
+
+    return { currentData, totalPages };
 };
+
 
 
 export const updateOrderById = async (orderId: mongoose.Types.ObjectId | string, updateData: Partial<IOrder>) => {
@@ -140,3 +155,5 @@ export const fetchAllOrders = async () => {
         throw error;
     }
 };
+
+

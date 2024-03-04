@@ -36,7 +36,55 @@ const getUserById = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
+
+const banManager = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const id = req.params.id;
+        const user = await UserService.banManager(id);
+        if (!user) {
+            res.status(404).send({ message: 'Manager not found' });
+            return;
+        }
+        res.json(user);
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+};
+
+const unbanManager = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const id = req.params.id;
+        const user = await UserService.unbanManager(id);
+        if (!user) {
+            res.status(404).send({ message: 'Manager not found' });
+            return;
+        }
+        res.json(user);
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+};
+
+const deleteManager = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const id = req.params.id;
+        const { deleted, message } = await UserService.deleteManager(id);
+        if (!deleted) {
+            res.status(404).send({ message: message || 'Manager not found' });
+            return;
+        }
+        res.status(204).send(); // No content to send back
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+};
+
+
+
 export default {
     getAllManagers,
     getUserById,
+    banManager,
+    unbanManager,
+    deleteManager,
 };

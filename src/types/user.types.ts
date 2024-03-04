@@ -11,6 +11,7 @@ export interface IUser extends Document {
     role: string;
     activationToken: string;
     activationTokenExpires: Date;
+    banned: Boolean;
 }
 
 

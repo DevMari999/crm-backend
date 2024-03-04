@@ -44,6 +44,10 @@ export const login = async (req: Request, res: Response) => {
             return res.status(401).send({message: 'Authentication failed'});
         }
 
+        if (user.banned) {
+            return res.status(403).send({message: 'This account has been banned.'});
+        }
+
         const isMatch = await bcrypt.compare(password, user.password);
 
         if (!isMatch) {
@@ -51,7 +55,7 @@ export const login = async (req: Request, res: Response) => {
         }
 
         const token = jwt.sign(
-            {userId: user._id, email: user.email, roles: user.role},
+            {userId: user._id, email: user.email, userRole: user.role},
             process.env.SECRET_KEY,
             {expiresIn: '1h'}
         );
@@ -61,6 +65,7 @@ export const login = async (req: Request, res: Response) => {
         res.status(500).send(error);
     }
 };
+
 
 export const generateLink = async (req: Request, res: Response) => {
     try {

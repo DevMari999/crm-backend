@@ -12,6 +12,7 @@ const UserSchema: Schema = new Schema({
     role: {type: String, default: 'manager'},
     activationToken: { type: String },
     activationTokenExpires: { type: Date },
+    banned: { type: Boolean, default: false}
 });
 
 export default mongoose.model<IUser>('User', UserSchema);

@@ -25,4 +25,6 @@ router.get('/orders-by-month', getOrdersByMonthController);
 router.get('/course-type-statistics', getCourseTypeStatisticsController);
 
 router.get('/orders/exel', getAllOrders);
+
+
 export default router;

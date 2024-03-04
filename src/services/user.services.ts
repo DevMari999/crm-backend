@@ -22,7 +22,35 @@ const getUserById = async (id: string): Promise<IUser | null> => {
     }
 };
 
+
+const banManager = async (id: string): Promise<IUser | null> => {
+    const user = await User.findByIdAndUpdate(id, { banned: true }, { new: true });
+    return user;
+};
+
+
+const unbanManager = async (id: string): Promise<IUser | null> => {
+    const user = await User.findByIdAndUpdate(id, { banned: false }, { new: true });
+    return user;
+};
+
+
+const deleteManager = async (id: string): Promise<{ deleted: boolean; message?: string }> => {
+    try {
+        const result = await User.findByIdAndDelete(id);
+        if (result) {
+            return { deleted: true };
+        }
+        return { deleted: false, message: 'Manager not found' };
+    } catch (error) {
+        throw error;
+    }
+};
+
 export default {
     getUsersWithRoleManager,
     getUserById,
+    banManager,
+    unbanManager,
+    deleteManager,
 };
