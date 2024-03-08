@@ -1,4 +1,5 @@
 import {Document} from "mongoose";
+import {Request} from "express";
 
 export interface IComment {
     managerId?: string;
@@ -24,4 +25,11 @@ export interface IOrder extends Document {
     group: string | null;
     manager: string | null;
     comments: IComment[];
+}
+
+export interface NewRequest extends Request {
+    user?: {
+        _id: string;
+        role: string;
+    };
 }

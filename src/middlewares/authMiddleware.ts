@@ -1,26 +1,72 @@
+import {  Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import {Request, Response, NextFunction} from 'express';
-import {UserPayload} from "../types/user.types";
+import {NewRequest} from "../types/order.types";
 
-export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers.authorization?.split(' ')[1];
+interface TokenPayload {
+    userId: string;
+    username: string;
+    userRole: string;
+    iat?: number;
+    exp?: number;
+}
+
+
+export const authenticate = (req: NewRequest, res: Response, next: NextFunction) => {
+    console.log('Authentication middleware called');
+    const authHeader = req.headers.authorization;
+    console.log('Authorization Header:', authHeader);
+
+    const token = authHeader && authHeader.split(' ')[1];
+    console.log('Extracted Token:', token);
 
     if (!token) {
-        return res.status(403).send({message: 'A token is required for authentication'});
+        console.log('No token provided');
+        return res.status(401).send({ message: 'No token provided' });
     }
 
     try {
-        const secretKey = process.env.SECRET_KEY || 'default_secret_key';
-        const decoded = jwt.verify(token, secretKey);
+        console.log('Verifying token...');
+        const decoded = jwt.verify(token, process.env.SECRET_KEY || '') as TokenPayload;
+        console.log('Token verified successfully:', decoded);
 
-        if (typeof decoded === 'object' && decoded !== null && 'userId' in decoded) {
-            req.user = decoded as UserPayload;
-        } else {
-            throw new Error('Invalid token payload');
-        }
-    } catch (err) {
-        return res.status(401).send({message: 'Invalid Token'});
+
+        req.user = {
+            _id: decoded.userId,
+            role: decoded.userRole,
+        };
+
+        next();
+    } catch (error) {
+        console.error('Token verification failed:', error);
+        return res.status(403).send({ message: 'Invalid token' });
     }
-
-    next();
 };
+
+// export const authenticate = (req: NewRequest, res: Response, next: NextFunction) => {
+//     console.log('Authentication middleware called');
+//
+//     // Get the token from cookies instead of Authorization header
+//     const token = req.cookies.token;
+//     console.log('Extracted Token from Cookies:', token);
+//
+//     if (!token) {
+//         console.log('No token provided');
+//         return res.status(401).send({ message: 'No token provided' });
+//     }
+//
+//     try {
+//         console.log('Verifying token...');
+//         const decoded = jwt.verify(token, process.env.SECRET_KEY || '') as TokenPayload;
+//         console.log('Token verified successfully:', decoded);
+//
+//         req.user = {
+//             _id: decoded.userId,
+//             role: decoded.userRole,
+//         };
+//
+//         next();
+//     } catch (error) {
+//         console.error('Token verification failed:', error);
+//         return res.status(403).send({ message: 'Invalid token' });
+//     }
+// };

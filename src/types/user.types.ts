@@ -17,6 +17,5 @@ export interface IUser extends Document {
 
 export interface UserPayload {
     _id: string;
-    username: string;
     role: string;
 }

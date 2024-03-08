@@ -6,21 +6,35 @@ import {IComment} from "../types/order.types";
 import { getCourseTypeStatistics, getStatusStatistics} from "../repositories/orders.repository";
 
 
-export const addCommentToOrder = async (orderId: mongoose.Types.ObjectId | string, comment: IComment): Promise<IOrder | null> => {
-    console.log(`Adding comment to order ${orderId}:`, comment);
+export const addCommentToOrder = async (
+    orderId: mongoose.Types.ObjectId | string,
+    comment: IComment,
+    userId: string
+): Promise<IOrder | null> => {
+    console.log(`Adding comment to order ${orderId} by user ${userId}:`, comment);
     try {
-        const updatedOrder = await Order.findByIdAndUpdate(
-            orderId,
-            {$push: {comments: comment}},
-            {new: true}
-        );
-        console.log(`Updated order with new comment:`, updatedOrder);
-        return updatedOrder;
+        const order = await Order.findById(orderId);
+
+        if (!order) {
+            console.log(`Order with ID ${orderId} not found.`);
+            return null;
+        }
+
+        if (!order.manager || order.manager.toString() === userId) {
+            const update = !order.manager ? {$push: {comments: comment}, $set: {manager: userId}} : {$push: {comments: comment}};
+            const updatedOrder = await Order.findByIdAndUpdate(orderId, update, {new: true});
+            console.log(`Updated order with new comment:`, updatedOrder);
+            return updatedOrder;
+        } else {
+            console.error(`User ${userId} does not have permission to add comment to order ${orderId}.`);
+            throw new Error('Permission denied');
+        }
     } catch (error) {
         console.error(`Error adding comment to order ${orderId}:`, error);
         throw error;
     }
 };
+
 
 export const deleteCommentFromOrder = async (orderId: mongoose.Types.ObjectId | string, commentId: string): Promise<IOrder | null> => {
     try {
@@ -80,12 +94,31 @@ export const getPaginatedOrders = async (
 };
 
 
-
-export const updateOrderById = async (orderId: mongoose.Types.ObjectId | string, updateData: Partial<IOrder>) => {
+export const updateOrderById = async (
+    orderId: mongoose.Types.ObjectId | string,
+    updateData: Partial<IOrder>,
+    loggedInUserId: string | undefined
+) => {
+    console.log('updateOrderById started', { orderId, updateData, loggedInUserId });
     try {
-        const updatedOrder = await Order.findByIdAndUpdate(orderId, updateData, {new: true});
+        const updatedOrder = await Order.findOneAndUpdate(
+            {
+                _id: orderId,
+                $or: [{ manager: loggedInUserId }, { manager: "" }],
+            },
+            updateData,
+            { new: true }
+        );
+
+        if (!updatedOrder) {
+            console.log('Order not found or unauthorized to edit');
+            throw new Error('Order not found or unauthorized to edit this order');
+        }
+
+        console.log('Order updated successfully', updatedOrder);
         return updatedOrder;
     } catch (error) {
+        console.error('Error in updateOrderById', error);
         throw error;
     }
 };

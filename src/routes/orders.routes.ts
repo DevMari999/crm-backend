@@ -7,14 +7,15 @@ import {
     getAllOrders,
     getStatusStatisticsController, getOrdersByMonthController, getCourseTypeStatisticsController
 } from "../controllers/ordersController";
+import {authenticate} from "../middlewares/authMiddleware";
 
 const router: Router = express.Router();
 
 router.get('/orders', getOrders);
 
-router.post('/orders/:id/comments', addComment);
+router.post('/orders/:id/comments', authenticate, addComment);
 
-router.put('/orders/:id', updateOrder);
+router.put('/orders/:id', authenticate, updateOrder);
 
 router.delete('/orders/:orderId/comments/:commentId', deleteComment);
 

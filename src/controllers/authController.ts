@@ -66,6 +66,45 @@ export const login = async (req: Request, res: Response) => {
     }
 };
 
+// export const login = async (req: Request, res: Response) => {
+//     try {
+//         const {email, password} = req.body;
+//         const user = await User.findOne({email});
+//
+//         if (!user) {
+//             return res.status(401).send({message: 'Authentication failed'});
+//         }
+//
+//         if (user.banned) {
+//             return res.status(403).send({message: 'This account has been banned.'});
+//         }
+//
+//         const isMatch = await bcrypt.compare(password, user.password);
+//
+//         if (!isMatch) {
+//             return res.status(401).send({message: 'Authentication failed'});
+//         }
+//
+//         const token = jwt.sign(
+//             {userId: user._id, email: user.email, userRole: user.role},
+//             process.env.SECRET_KEY,
+//             {expiresIn: '1h'}
+//         );
+//
+//
+//         res.cookie('token', token, {
+//             httpOnly: true,
+//             secure: process.env.NODE_ENV === 'production',
+//             sameSite: 'strict',
+//             expires: new Date(Date.now() + 3600000)
+//         });
+//
+//         res.status(200).send({message: 'Login successful'});
+//     } catch (error) {
+//         res.status(500).send(error);
+//     }
+// };
+
 
 export const generateLink = async (req: Request, res: Response) => {
     try {
