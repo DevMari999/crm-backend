@@ -1,5 +1,6 @@
 import {Document} from "mongoose";
 
+
 export interface IUser extends Document {
     name: string;
     lastname: string;
@@ -12,6 +13,8 @@ export interface IUser extends Document {
     activationToken: string;
     activationTokenExpires: Date;
     banned: Boolean;
+    created_at: Date;
+
 }
 
 

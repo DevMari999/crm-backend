@@ -43,7 +43,7 @@ export const getCourseTypeStatistics = async (): Promise<any> => {
 
 
 
-export const getOrdersByMonth = async (): Promise<any> => {
+export const repoGetOrdersByMonth = async (): Promise<any> => {
     try {
         const ordersByMonth = await Order.aggregate([
             {

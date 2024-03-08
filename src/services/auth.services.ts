@@ -1,6 +1,8 @@
 import User from '../models/user.model';
 import crypto from 'crypto';
 import bcrypt from 'bcrypt';
+import jwt from "jsonwebtoken";
+import RefreshTokenSchema from "../models/refresh-token.model";
 
 interface AuthResponse {
     message: string;
@@ -12,12 +14,13 @@ export const registerUser = async (name: string, email: string, lastname: string
     if (existingUser) {
         throw new Error('User already exists');
     }
-
+    const currentDate = new Date();
     const newUser = new User({
         name,
         lastname,
         email,
         isActive: false,
+        created_at: currentDate,
     });
 
     await newUser.save();
@@ -90,3 +93,37 @@ export const setUserPassword = async (activationToken: string, newPassword: stri
     console.log(`Password set successfully. User account is now active: ${user._id}`);
 };
 
+export const findUserById = async (userId: string) => {
+    try {
+        return await User.findById(userId).select('-password');
+    } catch (error) {
+        console.error('Error in UserService.findUserById:', error);
+        throw error;
+    }
+};
+
+
+export class RefreshTokenService {
+    static async refreshAccessToken(refreshToken: string): Promise<string | null> {
+        try {
+            const decoded = jwt.verify(refreshToken, process.env.REFRESH_SECRET_KEY!) as jwt.JwtPayload;
+
+            const storedToken = await RefreshTokenSchema.findOne({ token: refreshToken, user: decoded.userId });
+
+            if (!storedToken || storedToken.expiresAt < new Date()) {
+                throw new Error('Invalid refresh token');
+            }
+
+            const accessToken = jwt.sign(
+                { userId: decoded.userId, userRole: decoded.userRole },
+                process.env.SECRET_KEY!,
+                { expiresIn: '1h' }
+            );
+
+            return accessToken;
+        } catch (error) {
+            console.error('Error refreshing access token:', error);
+            return null;
+        }
+    }
+}

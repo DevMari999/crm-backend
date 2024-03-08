@@ -1,13 +1,19 @@
 import {Request, Response} from 'express';
 import UserService from '../services/user.services';
+import {buildSortObject, SortCriteria} from "../utils/queryBuilder.utils";
 
 const getAllManagers = async (req: Request, res: Response): Promise<void> => {
     try {
         console.log("Accessing /api/managers");
+        console.log("Request Payload:", req.body);
         const page = parseInt(req.query.page as string) || 1;
         const limit = parseInt(req.query.limit as string) || 5;
+        const sortBy = req.query.sortBy as string || 'created_at';
+        const sortOrder = req.query.sortOrder as 'asc' | 'desc' || 'asc';
 
-        const {users, total} = await UserService.getUsersWithRoleManager(page, limit);
+        const sort: SortCriteria = buildSortObject(sortBy, sortOrder);
+
+        const { users, total } = await UserService.getUsersWithRoleManager(page, limit, sort);
         const totalPages = Math.ceil(total / limit);
 
         res.json({
@@ -73,7 +79,7 @@ const deleteManager = async (req: Request, res: Response): Promise<void> => {
             res.status(404).send({ message: message || 'Manager not found' });
             return;
         }
-        res.status(204).send(); // No content to send back
+        res.status(204).send();
     } catch (error) {
         res.status(500).send({ message: error.message });
     }

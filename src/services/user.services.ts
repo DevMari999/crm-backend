@@ -1,11 +1,14 @@
 import User from '../models/user.model';
 import {IUser} from '../types/user.types';
+import {SortCriteria} from "../utils/queryBuilder.utils";
 
-const getUsersWithRoleManager = async (page: number, limit: number): Promise<{ users: IUser[], total: number }> => {
+const getUsersWithRoleManager = async (page: number, limit: number, sort: SortCriteria): Promise<{ users: IUser[], total: number }> => {
     try {
         const skip = (page - 1) * limit;
         const total = await User.countDocuments({role: 'manager'});
-        const users = await User.find({role: 'manager'}).skip(skip).limit(limit);
+
+        const users = await User.find({role: 'manager'}).sort(sort).skip(skip).limit(limit);
+
         return {users, total};
     } catch (error) {
         throw error;

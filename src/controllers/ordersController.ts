@@ -32,6 +32,26 @@ export const addComment = async (req: NewRequest, res: Response): Promise<void> 
     }
 };
 
+export const deleteComment = async (req: Request, res: Response): Promise<void> => {
+    const orderId = req.params.orderId;
+    const commentId = req.params.commentId;
+
+    try {
+        const updatedOrder = await OrdersService.deleteCommentFromOrder(orderId, commentId);
+
+        if (!updatedOrder) {
+            console.log(`Order with ID ${orderId} not found.`);
+            res.status(404).send('Order not found');
+        } else {
+            console.log(`Comment ${commentId} deleted from order ${orderId} successfully.`);
+            res.json(updatedOrder);
+        }
+    } catch (error) {
+        console.error(`Error in deleteComment controller for order ${orderId}:`, error);
+        res.status(500).send(error.message);
+    }
+};
+
 export const getOrders = async (req: Request, res: Response): Promise<void> => {
     try {
         const managerId = req.query.managerId as string;
@@ -78,25 +98,6 @@ export const updateOrder = async (req: NewRequest, res: Response): Promise<void>
 };
 
 
-export const deleteComment = async (req: Request, res: Response): Promise<void> => {
-    const orderId = req.params.orderId;
-    const commentId = req.params.commentId;
-
-    try {
-        const updatedOrder = await OrdersService.deleteCommentFromOrder(orderId, commentId);
-
-        if (!updatedOrder) {
-            console.log(`Order with ID ${orderId} not found.`);
-            res.status(404).send('Order not found');
-        } else {
-            console.log(`Comment ${commentId} deleted from order ${orderId} successfully.`);
-            res.json(updatedOrder);
-        }
-    } catch (error) {
-        console.error(`Error in deleteComment controller for order ${orderId}:`, error);
-        res.status(500).send(error.message);
-    }
-};
 
 
 export const getStatusStatisticsController = async (req: Request, res: Response): Promise<void> => {

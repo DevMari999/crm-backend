@@ -1,4 +1,4 @@
-interface SortCriteria {
+export interface SortCriteria {
     [key: string]: 1 | -1;
 }
 
@@ -21,11 +21,11 @@ export const buildQueryObject = (searchCriteria: any) => {
         const value = searchCriteria[field];
         if (value !== undefined && value !== '') {
             if (field === 'start_date') {
-                startDate = new Date(value); // Parse the date string
+                startDate = new Date(value);
                 startDate.setHours(0, 0, 0, 0);
                 continue;
             } else if (field === 'end_date') {
-                endDate = new Date(value); // Parse the date string
+                endDate = new Date(value);
                 endDate.setHours(23, 59, 59, 999);
                 continue;
             }
@@ -44,10 +44,10 @@ export const buildQueryObject = (searchCriteria: any) => {
     if (startDate || endDate) {
         query['created_at'] = {};
         if (startDate) {
-            query['created_at']['$gte'] = startDate.toISOString(); // Convert date to ISO string
+            query['created_at']['$gte'] = startDate.toISOString();
         }
         if (endDate) {
-            query['created_at']['$lte'] = endDate.toISOString(); // Convert date to ISO string
+            query['created_at']['$lte'] = endDate.toISOString();
         }
     }
 
