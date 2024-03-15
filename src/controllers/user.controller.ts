@@ -13,7 +13,7 @@ const getAllManagers = async (req: Request, res: Response): Promise<void> => {
 
         const sort: SortCriteria = buildSortObject(sortBy, sortOrder);
 
-        const { users, total } = await UserService.getUsersWithRoleManager(page, limit, sort);
+        const {users, total} = await UserService.getUsersWithRoleManager(page, limit, sort);
         const totalPages = Math.ceil(total / limit);
 
         res.json({
@@ -48,12 +48,12 @@ const banManager = async (req: Request, res: Response): Promise<void> => {
         const id = req.params.id;
         const user = await UserService.banManager(id);
         if (!user) {
-            res.status(404).send({ message: 'Manager not found' });
+            res.status(404).send({message: 'Manager not found'});
             return;
         }
         res.json(user);
     } catch (error) {
-        res.status(500).send({ message: error.message });
+        res.status(500).send({message: error.message});
     }
 };
 
@@ -62,29 +62,28 @@ const unbanManager = async (req: Request, res: Response): Promise<void> => {
         const id = req.params.id;
         const user = await UserService.unbanManager(id);
         if (!user) {
-            res.status(404).send({ message: 'Manager not found' });
+            res.status(404).send({message: 'Manager not found'});
             return;
         }
         res.json(user);
     } catch (error) {
-        res.status(500).send({ message: error.message });
+        res.status(500).send({message: error.message});
     }
 };
 
 const deleteManager = async (req: Request, res: Response): Promise<void> => {
     try {
         const id = req.params.id;
-        const { deleted, message } = await UserService.deleteManager(id);
+        const {deleted, message} = await UserService.deleteManager(id);
         if (!deleted) {
-            res.status(404).send({ message: message || 'Manager not found' });
+            res.status(404).send({message: message || 'Manager not found'});
             return;
         }
         res.status(204).send();
     } catch (error) {
-        res.status(500).send({ message: error.message });
+        res.status(500).send({message: error.message});
     }
 };
-
 
 
 export default {

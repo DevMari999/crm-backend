@@ -1,4 +1,4 @@
-import { Document, ObjectId } from 'mongoose';
+import {Document, ObjectId} from 'mongoose';
 
 export interface IRefreshToken extends Document {
     user: ObjectId;

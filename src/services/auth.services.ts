@@ -3,32 +3,82 @@ import crypto from 'crypto';
 import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
 import RefreshTokenSchema from "../models/refresh-token.model";
+import {generateAndStoreRefreshToken} from "../utils/refreshToken.utils";
 
-interface AuthResponse {
-    message: string;
-    userId?: string;
-}
+export const loginUser = async (email: string, password: string): Promise<{
+    accessToken: string,
+    refreshToken: string,
+    expiresIn: number
+} | null> => {
+    try {
+        const user = await User.findOne({email});
 
-export const registerUser = async (name: string, email: string, lastname: string): Promise<AuthResponse> => {
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-        throw new Error('User already exists');
+        if (!user) {
+            return null;
+        }
+
+        if (user.banned) {
+            return null;
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return null;
+        }
+
+        user.last_login = new Date();
+        await user.save();
+
+        const accessToken = jwt.sign(
+            {userId: user._id, userRole: user.role},
+            process.env.SECRET_KEY!,
+            {expiresIn: '1h'}
+        );
+
+        const refreshToken = jwt.sign(
+            {userId: user._id},
+            process.env.REFRESH_SECRET_KEY!,
+            {expiresIn: '7d'}
+        );
+
+        const expiresIn = 7 * 24 * 60 * 60 * 1000;
+        await generateAndStoreRefreshToken(user._id, refreshToken, expiresIn);
+
+        return {accessToken, refreshToken, expiresIn};
+    } catch (error) {
+        console.error(error);
+        return null;
     }
-    const currentDate = new Date();
-    const newUser = new User({
-        name,
-        lastname,
-        email,
-        isActive: false,
-        created_at: currentDate,
-    });
+};
 
-    await newUser.save();
+export const registerUser = async (name: string, email: string, lastname: string): Promise<string | null> => {
+    try {
+        const existingUser = await User.findOne({email});
+        if (existingUser) {
+            return 'User already exists';
+        }
 
-    return {
-        message: 'User registered successfully. Please check your email to set your password and activate your account.',
-        userId: newUser._id.toString(),
-    };
+        const passwordResetToken = crypto.randomBytes(20).toString('hex');
+        const passwordResetExpires = Date.now() + 3600000;
+        const currentDate = Date.now();
+
+        const newUser = new User({
+            name,
+            lastname,
+            email,
+            isActive: false,
+            passwordResetToken,
+            passwordResetExpires,
+            created_at: currentDate
+        });
+
+        await newUser.save();
+
+        return null;
+    } catch (error) {
+        console.error(error);
+        return error.message;
+    }
 };
 
 
@@ -68,7 +118,7 @@ const saltRounds = 10;
 export const setUserPassword = async (activationToken: string, newPassword: string): Promise<void> => {
     console.log(`Attempting to set password with token: ${activationToken}`);
 
-    const user = await User.findOne({ activationToken });
+    const user = await User.findOne({activationToken});
 
     if (!user) {
         console.log('No user found with the provided activationToken.');
@@ -108,16 +158,16 @@ export class RefreshTokenService {
         try {
             const decoded = jwt.verify(refreshToken, process.env.REFRESH_SECRET_KEY!) as jwt.JwtPayload;
 
-            const storedToken = await RefreshTokenSchema.findOne({ token: refreshToken, user: decoded.userId });
+            const storedToken = await RefreshTokenSchema.findOne({token: refreshToken, user: decoded.userId});
 
             if (!storedToken || storedToken.expiresAt < new Date()) {
                 throw new Error('Invalid refresh token');
             }
 
             const accessToken = jwt.sign(
-                { userId: decoded.userId, userRole: decoded.userRole },
+                {userId: decoded.userId, userRole: decoded.userRole},
                 process.env.SECRET_KEY!,
-                { expiresIn: '1h' }
+                {expiresIn: '1h'}
             );
 
             return accessToken;

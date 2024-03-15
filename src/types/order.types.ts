@@ -1,10 +1,10 @@
 import {Document} from "mongoose";
-import {Request} from "express";
 
 export interface IComment {
     managerId?: string;
     comment: string;
     createdAt: Date;
+    managerName: string;
 }
 
 export interface IOrder extends Document {
@@ -27,9 +27,3 @@ export interface IOrder extends Document {
     comments: IComment[];
 }
 
-export interface NewRequest extends Request {
-    user?: {
-        _id: string;
-        role: string;
-    };
-}

@@ -4,12 +4,14 @@ import {IOrder} from "../types/order.types";
 
 const commentSchema = new Schema({
     managerId: {type: String},
+    managerName: {type: String},
     comment: {type: String, required: true},
     createdAt: {type: Date, default: Date.now}
 });
 
-const statusEnum = ['pending', 'completed', 'cancelled', 'in work', 'dubbing'];
-const courseTypeEnum = ['QACX', 'PCX', 'JSCX', 'JCX', 'FS', 'FE'];
+const statusEnum = ['pending', 'completed', 'cancelled', 'in work', 'dubbing', 'new'];
+const courseEnum = ['QACX', 'PCX', 'JSCX', 'JCX', 'FS', 'FE'];
+const courseTypeEnum = ['vip', 'pro', 'minimal', 'incubator', 'premium'];
 
 
 const orderSchema = new Schema<IOrder>(
@@ -19,7 +21,7 @@ const orderSchema = new Schema<IOrder>(
         email: {type: String},
         phone: {type: String},
         age: {type: Number, default: null},
-        course: {type: String},
+        course: {type: String, enum: courseEnum},
         course_format: {type: String},
         course_type: {type: String, default: null, enum: courseTypeEnum},
         sum: {type: Number, default: 0},

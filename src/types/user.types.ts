@@ -14,6 +14,7 @@ export interface IUser extends Document {
     activationTokenExpires: Date;
     banned: Boolean;
     created_at: Date;
+    last_login: Date;
 
 }
 

@@ -11,10 +11,14 @@ const UserSchema: Schema = new Schema({
     passwordResetToken: {type: String},
     passwordResetExpires: {type: Date},
     role: {type: String, default: 'manager'},
-    activationToken: { type: String },
-    activationTokenExpires: { type: Date },
-    banned: { type: Boolean, default: false},
-    created_at:{ type: Date, required: true },
+    activationToken: {type: String},
+    activationTokenExpires: {type: Date},
+    banned: {type: Boolean, default: false},
+    created_at: {
+        type: Date,
+        default: Date.now
+    },
+    last_login: {type: Date},
 
 });
 
