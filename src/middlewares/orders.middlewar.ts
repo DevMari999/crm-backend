@@ -35,7 +35,6 @@ const orderUpdateValidationSchema = Joi.object({
 
 function validateOrderInput(schema: Joi.ObjectSchema) {
     return (req: Request, res: Response, next: NextFunction) => {
-        console.log("Validating order input...");
 
         const validationResult = schema.validate(req.body, {abortEarly: false});
         const {error} = validationResult;
