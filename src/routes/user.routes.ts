@@ -10,7 +10,9 @@ const router: Router = express.Router();
  * /api/users/managers:
  *   get:
  *     summary: Get all managers
- *     description: Retrieves a list of all managers.
+ *     description: Retrieves a list of all managers. Requires authentication.
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: A list of managers
@@ -50,23 +52,27 @@ router.get('/:id', userController.getUserById);
 
 /**
  * @swagger
- * /api/users/managers/ban/{id}:
- *   patch:
- *     summary: Ban a manager
- *     description: Bans a manager by their unique identifier, preventing them from accessing certain functionalities.
+ * /api/users/managers/{id}:
+ *   delete:
+ *     summary: Delete a manager
+ *     description: Permanently deletes a manager's record from the system by their unique identifier. Requires admin permissions.
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
- *         description: The unique identifier of the manager to be banned
+ *         description: The unique identifier of the manager to be deleted
  *     responses:
- *       200:
- *         description: Manager banned successfully
+ *       204:
+ *         description: Manager deleted successfully
  *       404:
  *         description: Manager not found
  */
+
+
 
 router.patch('/managers/ban/:id', authenticate, isAdmin, userController.banManager);
 
@@ -75,7 +81,9 @@ router.patch('/managers/ban/:id', authenticate, isAdmin, userController.banManag
  * /api/users/managers/unban/{id}:
  *   patch:
  *     summary: Unban a manager
- *     description: Removes a ban from a manager by their unique identifier, restoring their access to previously restricted functionalities.
+ *     description: Removes a ban from a manager by their unique identifier, restoring their access to previously restricted functionalities. Requires admin permissions.
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -89,6 +97,7 @@ router.patch('/managers/ban/:id', authenticate, isAdmin, userController.banManag
  *       404:
  *         description: Manager not found
  */
+
 router.patch('/managers/unban/:id', authenticate, isAdmin, userController.unbanManager);
 
 /**

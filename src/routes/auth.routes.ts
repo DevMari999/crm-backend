@@ -37,7 +37,7 @@ router.post('/register', register);
  * /api/auth/login:
  *   post:
  *     summary: User login
- *     description: Allows users to login.
+ *     description: Allows users to login. The email must meet specific validation criteria.
  *     requestBody:
  *       required: true
  *       content:
@@ -48,6 +48,7 @@ router.post('/register', register);
  *               email:
  *                 type: string
  *                 format: email
+ *                 description: Must be a valid email address.
  *               password:
  *                 type: string
  *     responses:
@@ -55,7 +56,10 @@ router.post('/register', register);
  *         description: Login successful
  *       401:
  *         description: Unauthorized
+ *       400:
+ *         description: Bad request (invalid email format)
  */
+
 router.post('/login', validateEmail, login);
 
 /**
@@ -83,7 +87,7 @@ router.post('/generate-activation-link/:userId', generateLink);
  * /api/auth/set-password:
  *   post:
  *     summary: Set or update user password
- *     description: Allows users to set or update their password.
+ *     description: Allows users to set or update their password. The password must meet specific validation criteria.
  *     requestBody:
  *       required: true
  *       content:
@@ -93,12 +97,14 @@ router.post('/generate-activation-link/:userId', generateLink);
  *             properties:
  *               newPassword:
  *                 type: string
+ *                 description: Must meet password complexity requirements.
  *     responses:
  *       200:
  *         description: Password updated successfully
  *       400:
- *         description: Bad request
+ *         description: Bad request (password does not meet complexity requirements)
  */
+
 router.post('/set-password', validatePassword, setPassword);
 
 /**

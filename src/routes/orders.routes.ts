@@ -39,7 +39,7 @@ router.get('/', getOrders);
  * /api/orders/{id}/comments:
  *   post:
  *     summary: Add a comment to an order
- *     description: Allows authorized users (admin, manager) to add comments to an order.
+ *     description: Allows authorized users (e.g., admin, manager) to add comments to an order. Authentication and authorization are required.
  *     parameters:
  *       - in: path
  *         name: id
@@ -56,7 +56,12 @@ router.get('/', getOrders);
  *     responses:
  *       201:
  *         description: Comment added
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden (not allowed to add comment)
  */
+
 
 router.post('/:id/comments/', authenticate, canAddCommentToOrder, addComment);
 
@@ -65,14 +70,14 @@ router.post('/:id/comments/', authenticate, canAddCommentToOrder, addComment);
  * /api/orders/{id}:
  *   put:
  *     summary: Update an order
- *     description: Allows updating an order's details. Requires authentication.
+ *     description: Allows updating an order's details. Requires authentication and validation of the order update.
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
- *         description: The order ID
+ *         description: The order ID to update
  *     requestBody:
  *       required: true
  *       content:
@@ -82,7 +87,12 @@ router.post('/:id/comments/', authenticate, canAddCommentToOrder, addComment);
  *     responses:
  *       200:
  *         description: Order updated
+ *       400:
+ *         description: Bad request (validation failed)
+ *       401:
+ *         description: Unauthorized (authentication required)
  */
+
 
 router.put('/:id', authenticate, validateOrderUpdate, updateOrder);
 
@@ -91,7 +101,7 @@ router.put('/:id', authenticate, validateOrderUpdate, updateOrder);
  * /api/orders/{orderId}/comments/{commentId}:
  *   delete:
  *     summary: Delete a comment from an order
- *     description: Allows authorized users (admin, manager) to delete a comment from an order.
+ *     description: Allows authorized users (e.g., admin, manager) to delete a comment from an order. Authentication and manager authorization are required.
  *     parameters:
  *       - in: path
  *         name: orderId
@@ -104,11 +114,16 @@ router.put('/:id', authenticate, validateOrderUpdate, updateOrder);
  *         required: true
  *         schema:
  *           type: string
- *         description: The comment ID
+ *         description: The comment ID to delete
  *     responses:
  *       204:
  *         description: Comment deleted
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden (not manager of order)
  */
+
 router.delete('/:orderId/comments/:commentId', authenticate, checkUserIsManagerOfOrder, deleteComment);
 
 /**
