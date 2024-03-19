@@ -103,7 +103,7 @@ export const generateActivationLink = async (userId: string) => {
         await user.save();
         console.log(`User model saved with activation token and expiration`);
 
-        const activationLink = `https://crm-platform-three.vercel.app/activate/${activationToken}`;
+        const activationLink = `http://localhost:3000/activate/${activationToken}`;
         console.log(`Generated activation link: ${activationLink}`);
 
         return activationLink;
