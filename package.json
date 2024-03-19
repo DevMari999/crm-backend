@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=production rimraf dist && tsc-watch --onSuccess 'npm run watch'",
+    "start": "cross-env NODE_ENV=production rimraf dist && tsc-watch --onSuccess 'npm start'",
     "dev": "cross-env NODE_ENV=development rimraf dist && tsc-watch --onSuccess 'npm run watch-dev'",
     "watch": "nodemon 'src/server.ts' --watch './src'",
     "watch-dev": "cross-env NODE_ENV=development nodemon 'src/server.ts' --watch './src'"
