@@ -22,7 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
 const corsOptions = {
-    origin: ['https://crm-platform-three.vercel.app', 'http://localhost:3000'],
+    origin: 'http://localhost:3000',
     credentials: true,
 };
 

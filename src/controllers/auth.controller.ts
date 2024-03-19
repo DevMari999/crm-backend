@@ -33,6 +33,7 @@ export const login = async (req: Request, res: Response) => {
         const {email, password} = req.body;
 
         const tokens = await loginUser(email, password);
+
         if (!tokens) {
             return res.status(401).send({message: 'Authentication failed'});
         }
