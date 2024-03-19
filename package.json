@@ -4,13 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "cross-env NODE_ENV=production rimraf dist && tsc",
-    "start": "cross-env NODE_ENV=production node dist/server.js",
-    "dev": "cross-env NODE_ENV=development rimraf dist && tsc-watch --onSuccess 'npm run watch-dev'",
-    "watch": "nodemon 'src/server.ts' --watch 'src'",
-    "watch-dev": "cross-env NODE_ENV=development nodemon 'src/server.ts' --watch 'src'"
+    "start": "rimraf dist && tsc-watch --onSuccess 'npm run watch'",
+    "watch": "nodemon 'src/app.ts' --watch './src'"
   },
-
   "keywords": [],
   "author": "",
   "license": "ISC",
