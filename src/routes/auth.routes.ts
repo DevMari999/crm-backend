@@ -6,7 +6,7 @@ import {
     setPassword,
     getUserDetails, refresh, logout,
 } from '../controllers/auth.controller';
-import { validateEmail, validatePassword} from "../middlewares/auth.middleware";
+import {authenticate, validateEmail, validatePassword} from "../middlewares/auth.middleware";
 
 
 const router = express.Router();
@@ -121,7 +121,7 @@ router.post('/set-password', validatePassword, setPassword);
  *       401:
  *         description: Unauthorized
  */
-router.get('/user-details',  getUserDetails);
+router.get('/user-details', authenticate, getUserDetails);
 
 /**
  * @swagger

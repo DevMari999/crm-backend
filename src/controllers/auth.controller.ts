@@ -41,13 +41,13 @@ export const login = async (req: Request, res: Response) => {
         res.cookie('token', accessToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
             expires: new Date(Date.now() + 3600000)
         });
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
             expires: new Date(Date.now() + expiresIn)
         });
         res.status(200).send({message: 'Login successful'});
@@ -62,7 +62,7 @@ export const logout = (req: Request, res: Response) => {
     const cookieOptions: CookieOptions = {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'none' as 'none',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     };
 
     res.clearCookie('token', cookieOptions);
