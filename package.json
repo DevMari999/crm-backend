@@ -4,10 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "rimraf dist && tsc",
-    "start": "node dist/app.js",
-    "dev": "rimraf dist && tsc-watch --onSuccess 'npm run watch'",
-    "watch": "nodemon 'src/app.ts' --watch 'src'"
+    "start": "rimraf dist && tsc-watch --onSuccess 'npm run watch'",
+    "watch": "nodemon 'src/server.ts' --watch './src'"
   },
 
   "keywords": [],
