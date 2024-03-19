@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "rimraf dist && tsc-watch --onSuccess 'npm run watch'",
-    "watch": "nodemon 'src/server.ts' --watch './src'"
+    "start": "cross-env NODE_ENV=production rimraf dist && tsc-watch --onSuccess 'npm run watch'",
+    "dev": "cross-env NODE_ENV=development rimraf dist && tsc-watch --onSuccess 'npm run watch-dev'",
+    "watch": "nodemon 'src/server.ts' --watch './src'",
+    "watch-dev": "cross-env NODE_ENV=development nodemon 'src/server.ts' --watch './src'"
   },
   "keywords": [],
   "author": "",
@@ -46,8 +48,11 @@
     "@types/ws": "^8.5.10",
     "@typescript-eslint/eslint-plugin": "^6.10.0",
     "@typescript-eslint/parser": "^6.10.0",
+    "cross-env": "^7.0.3",
     "eslint": "^8.53.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "webpack": "^5.90.3",
+    "webpack-cli": "^5.1.4"
   }
 }
