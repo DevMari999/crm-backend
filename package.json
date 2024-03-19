@@ -4,11 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=production rimraf dist && tsc-watch --onSuccess 'npm start'",
+    "build": "cross-env NODE_ENV=production rimraf dist && tsc",
+    "start": "cross-env NODE_ENV=production node dist/server.js",
     "dev": "cross-env NODE_ENV=development rimraf dist && tsc-watch --onSuccess 'npm run watch-dev'",
-    "watch": "nodemon 'src/server.ts' --watch './src'",
-    "watch-dev": "cross-env NODE_ENV=development nodemon 'src/server.ts' --watch './src'"
+    "watch": "nodemon 'src/server.ts' --watch 'src'",
+    "watch-dev": "cross-env NODE_ENV=development nodemon 'src/server.ts' --watch 'src'"
   },
+
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -27,11 +29,9 @@
     "mongoose": "^8.1.1",
     "nodemon": "^3.0.1",
     "rimraf": "^5.0.5",
-    "socket.io": "^4.7.4",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
-    "tsc-watch": "^6.0.4",
-    "ws": "^8.16.0"
+    "tsc-watch": "^6.0.4"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
