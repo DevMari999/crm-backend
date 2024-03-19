@@ -86,15 +86,21 @@ export const generateLink = async (req: Request, res: Response) => {
 };
 export const setPassword = async (req: Request, res: Response) => {
     try {
-        const {activationToken, newPassword} = req.body;
+        const { activationToken, newPassword } = req.body;
+
+        console.log('Attempting to set password with activationToken:', activationToken);
 
         await setUserPassword(activationToken, newPassword);
 
-        res.status(200).send({message: 'Password set successfully. Your account is now active.'});
+        console.log('Password set successfully. Your account is now active.');
+
+        res.status(200).send({ message: 'Password set successfully. Your account is now active.' });
     } catch (error) {
-        res.status(500).send({message: error.message});
+        console.error('Error during password set:', error.message);
+        res.status(500).send({ message: error.message });
     }
 };
+
 
 export const getUserDetails = async (req: NewRequest, res: Response) => {
     try {

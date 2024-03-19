@@ -57,16 +57,21 @@ export function validateEmail(req: Request, res: Response, next: NextFunction) {
 
 
 export function validatePassword(req: Request, res: Response, next: NextFunction) {
-    const {password} = req.body;
+    const { password, newPassword } = req.body;
     const passwordMinLength = 8;
 
-    if (!password) {
-        return res.status(400).send('Password is required.');
+    if (!password && !newPassword) {
+        return res.status(400).json({ error: 'Password is required.' });
     }
 
-    if (password.length < passwordMinLength) {
-        return res.status(400).send(`Password must be at least ${passwordMinLength} characters long.`);
+    if (password && password.length < passwordMinLength) {
+        return res.status(400).json({ error: `Password must be at least ${passwordMinLength} characters long.` });
+    }
+
+    if (newPassword && newPassword.length < passwordMinLength) {
+        return res.status(400).json({ error: `New password must be at least ${passwordMinLength} characters long.` });
     }
 
     next();
 }
+
