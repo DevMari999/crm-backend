@@ -4,9 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "rimraf dist && tsc-watch --onSuccess 'npm run watch'",
-    "watch": "nodemon 'src/app.ts' --watch './src'"
+    "build": "rimraf dist && tsc",
+    "start": "node dist/app.js",
+    "dev": "rimraf dist && tsc-watch --onSuccess 'npm run watch'",
+    "watch": "nodemon 'src/app.ts' --watch 'src'"
   },
+
   "keywords": [],
   "author": "",
   "license": "ISC",
