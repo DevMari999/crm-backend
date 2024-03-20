@@ -159,3 +159,13 @@ export const getOrderStatsByManagerService = async () => {
         throw new Error('Service failed to retrieve order statistics');
     }
 };
+
+export const getAllCommentsService = async () => {
+    try {
+        const ordersWithComments = await Order.find().select('comments');
+        return ordersWithComments.reduce((acc, order) => acc.concat(order.comments), []);
+    } catch (error) {
+        console.error('Error fetching comments:', error);
+        throw error;
+    }
+};

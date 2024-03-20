@@ -1,6 +1,7 @@
 import {Request, Response} from 'express';
 import * as OrdersService from '../services/orders.services';
 import {
+    getAllCommentsService,
     getCourseTypeStatisticsService,
     getOrdersByMonth, getOrderStatsByManagerService,
     getStatusStatisticsService,
@@ -148,5 +149,15 @@ export const getOrderStatsByManagerController = async (req: Request, res: Respon
     } catch (error) {
 
         res.status(500).send('Failed to retrieve order statistics');
+    }
+};
+
+export const getAllComments = async (req: Request, res: Response) => {
+    try {
+        const comments = await getAllCommentsService();
+        res.json(comments);
+    } catch (error) {
+        console.error('Failed to get comments:', error);
+        res.status(500).json({ message: 'Error fetching comments' });
     }
 };

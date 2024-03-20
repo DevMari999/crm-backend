@@ -9,7 +9,7 @@ import {
     getOrdersByMonthController,
     getCourseTypeStatisticsController,
     getUniqueGroupNames,
-    getOrderStatsByManagerController
+    getOrderStatsByManagerController, getAllComments
 } from "../controllers/orders.controller";
 import {authenticate} from "../middlewares/auth.middleware";
 import {canAddCommentToOrder, checkUserIsManagerOfOrder, validateOrderUpdate} from "../middlewares/orders.middlewar";
@@ -225,5 +225,7 @@ router.get('/groups/unique-names', getUniqueGroupNames);
  *               $ref: '#/components/schemas/OrderStatsByManager'
  */
 router.get('/order-stats-by-manager', getOrderStatsByManagerController);
+
+router.get('/comments', getAllComments);
 
 export default router;

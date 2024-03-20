@@ -42,12 +42,14 @@ export const login = async (req: Request, res: Response) => {
 
         res.cookie('token', accessToken, {
             httpOnly: true,
+            domain: '.crm-platform-three.vercel.app',
             secure: process.env.NODE_ENV === 'production',
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
             expires: new Date(Date.now() + 3600000)
         });
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
+            domain: '.crm-platform-three.vercel.app',
             secure: process.env.NODE_ENV === 'production',
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
             expires: new Date(Date.now() + expiresIn)
