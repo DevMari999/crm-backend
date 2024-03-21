@@ -15,6 +15,7 @@ const router = express.Router();
  * @swagger
  * /api/auth/register:
  *   post:
+ *     tags: [Auth]
  *     summary: Register a new user
  *     description: Allows a new user to register.
  *     requestBody:
@@ -36,6 +37,7 @@ router.post('/register', register);
  * @swagger
  * /api/auth/login:
  *   post:
+ *     tags: [Auth]
  *     summary: User login
  *     description: Allows users to login. The email must meet specific validation criteria.
  *     requestBody:
@@ -66,6 +68,7 @@ router.post('/login', validateEmail, login);
  * @swagger
  * /api/auth/generate-activation-link/{userId}:
  *   post:
+ *     tags: [Auth]
  *     summary: Generate activation link
  *     description: Generates an activation link for the user.
  *     parameters:
@@ -86,6 +89,7 @@ router.post('/generate-activation-link/:userId', generateLink);
  * @swagger
  * /api/auth/set-password:
  *   post:
+ *     tags: [Auth]
  *     summary: Set or update user password
  *     description: Allows users to set or update their password. The password must meet specific validation criteria.
  *     requestBody:
@@ -111,6 +115,7 @@ router.post('/set-password', validatePassword, setPassword);
  * @swagger
  * /api/auth/user-details:
  *   get:
+ *     tags: [Auth]
  *     summary: Get user details
  *     description: Retrieves details of the currently authenticated user.
  *     security:
@@ -127,6 +132,7 @@ router.get('/user-details', authenticate, getUserDetails);
  * @swagger
  * /api/auth/refresh:
  *   post:
+ *     tags: [Auth]
  *     summary: Refresh authentication token
  *     description: Refreshes the authentication token for a user.
  *     requestBody:
@@ -155,6 +161,7 @@ router.post('/refresh', refresh);
  * @swagger
  * /api/auth/logout:
  *   post:
+ *     tags: [Auth]
  *     summary: Logout user
  *     description: Logs out the current user and invalidates the session.
  *     responses:

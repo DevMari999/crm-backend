@@ -9,7 +9,7 @@ import {
     getOrdersByMonthController,
     getCourseTypeStatisticsController,
     getUniqueGroupNames,
-    getOrderStatsByManagerController, getAllComments
+    getOrderStatsByManagerController, getCommentsByOrderId
 } from "../controllers/orders.controller";
 import {authenticate} from "../middlewares/auth.middleware";
 import {canAddCommentToOrder, checkUserIsManagerOfOrder, validateOrderUpdate} from "../middlewares/orders.middlewar";
@@ -20,6 +20,7 @@ const router: Router = express.Router();
  * @swagger
  * /api/orders:
  *   get:
+ *     tags: [Orders]
  *     summary: Retrieve a list of orders
  *     description: Fetches a list of orders with optional filtering and pagination.
  *     responses:
@@ -38,6 +39,7 @@ router.get('/', getOrders);
  * @swagger
  * /api/orders/{id}/comments:
  *   post:
+ *     tags: [Orders]
  *     summary: Add a comment to an order
  *     description: Allows authorized users (e.g., admin, manager) to add comments to an order. Authentication and authorization are required.
  *     parameters:
@@ -69,6 +71,7 @@ router.post('/:id/comments/', authenticate, canAddCommentToOrder, addComment);
  * @swagger
  * /api/orders/{id}:
  *   put:
+ *     tags: [Orders]
  *     summary: Update an order
  *     description: Allows updating an order's details. Requires authentication and validation of the order update.
  *     parameters:
@@ -100,6 +103,7 @@ router.put('/:id', authenticate, validateOrderUpdate, updateOrder);
  * @swagger
  * /api/orders/{orderId}/comments/{commentId}:
  *   delete:
+ *     tags: [Orders]
  *     summary: Delete a comment from an order
  *     description: Allows authorized users (e.g., admin, manager) to delete a comment from an order. Authentication and manager authorization are required.
  *     parameters:
@@ -130,6 +134,7 @@ router.delete('/:orderId/comments/:commentId', authenticate, checkUserIsManagerO
  * @swagger
  * /api/orders/status-statistics:
  *   get:
+ *     tags: [Orders]
  *     summary: Get statistics by order status
  *     description: Retrieves statistics of orders categorized by their status.
  *     responses:
@@ -147,6 +152,7 @@ router.get('/status-statistics', getStatusStatisticsController);
  * @swagger
  * /api/orders/orders-by-month:
  *   get:
+ *     tags: [Orders]
  *     summary: Get orders by month
  *     description: Retrieves a count of orders grouped by month.
  *     responses:
@@ -163,6 +169,7 @@ router.get('/orders-by-month', getOrdersByMonthController);
  * @swagger
  * /api/orders/course-type-statistics:
  *   get:
+ *     tags: [Orders]
  *     summary: Get statistics by course type
  *     description: Retrieves statistics of orders categorized by course type.
  *     responses:
@@ -179,6 +186,7 @@ router.get('/course-type-statistics', getCourseTypeStatisticsController);
  * @swagger
  * /api/orders/excel:
  *   get:
+ *     tags: [Orders]
  *     summary: Export orders to Excel
  *     description: Downloads an Excel file containing all orders.
  *     responses:
@@ -196,6 +204,7 @@ router.get('/excel', getAllOrders);
  * @swagger
  * /api/orders/groups/unique-names:
  *   get:
+ *     tags: [Orders]
  *     summary: Get unique order group names
  *     description: Retrieves a list of unique order group names.
  *     responses:
@@ -214,6 +223,7 @@ router.get('/groups/unique-names', getUniqueGroupNames);
  * @swagger
  * /api/orders/order-stats-by-manager:
  *   get:
+ *     tags: [Orders]
  *     summary: Get order statistics by manager
  *     description: Retrieves order statistics categorized by manager.
  *     responses:
@@ -226,6 +236,33 @@ router.get('/groups/unique-names', getUniqueGroupNames);
  */
 router.get('/order-stats-by-manager', getOrderStatsByManagerController);
 
-router.get('/comments', getAllComments);
+/**
+ * @swagger
+ * /api/users/{orderId}/comments:
+ *   get:
+ *     tags: [Orders]
+ *     summary: Get comments by Order ID
+ *     description: Retrieves all comments associated with a specific order.
+ *     parameters:
+ *       - in: path
+ *         name: orderId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The unique identifier of the order
+ *     responses:
+ *       200:
+ *         description: List of comments retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Comment'
+ *       404:
+ *         description: Order not found
+ */
+router.get('/:orderId/comments', getCommentsByOrderId);
+
 
 export default router;

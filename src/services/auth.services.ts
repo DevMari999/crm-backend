@@ -164,13 +164,11 @@ export class RefreshTokenService {
                 throw new Error('Invalid refresh token');
             }
 
-            const accessToken = jwt.sign(
+            return jwt.sign(
                 {userId: decoded.userId, userRole: decoded.userRole},
                 process.env.SECRET_KEY!,
                 {expiresIn: '1h'}
             );
-
-            return accessToken;
         } catch (error) {
             console.error('Error refreshing access token:', error);
             return null;

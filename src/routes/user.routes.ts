@@ -9,6 +9,7 @@ const router: Router = express.Router();
  * @swagger
  * /api/users/managers:
  *   get:
+ *     tags: [Users]
  *     summary: Get all managers
  *     description: Retrieves a list of all managers. Requires authentication.
  *     security:
@@ -29,6 +30,7 @@ router.get('/managers', userController.getAllManagers);
  * @swagger
  * /api/users/{id}:
  *   get:
+ *     tags: [Users]
  *     summary: Get a user by ID
  *     description: Retrieves detailed information about a user by their unique identifier.
  *     parameters:
@@ -54,6 +56,7 @@ router.get('/:id', userController.getUserById);
  * @swagger
  * /api/users/managers/{id}:
  *   delete:
+ *     tags: [Users]
  *     summary: Delete a manager
  *     description: Permanently deletes a manager's record from the system by their unique identifier. Requires admin permissions.
  *     security:
@@ -73,13 +76,13 @@ router.get('/:id', userController.getUserById);
  */
 
 
-
 router.patch('/managers/ban/:id', authenticate, isAdmin, userController.banManager);
 
 /**
  * @swagger
  * /api/users/managers/unban/{id}:
  *   patch:
+ *     tags: [Users]
  *     summary: Unban a manager
  *     description: Removes a ban from a manager by their unique identifier, restoring their access to previously restricted functionalities. Requires admin permissions.
  *     security:
@@ -104,6 +107,7 @@ router.patch('/managers/unban/:id', authenticate, isAdmin, userController.unbanM
  * @swagger
  * /api/users/managers/{id}:
  *   delete:
+ *     tags: [Users]
  *     summary: Delete a manager
  *     description: Permanently deletes a manager's record from the system by their unique identifier.
  *     parameters:

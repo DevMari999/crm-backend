@@ -4,9 +4,9 @@ const courseTypeEnum = ['QACX', 'PCX', 'JSCX', 'JCX', 'FS', 'FE'] as const;
 const swaggerDefinition: Record<string, any> = {
     openapi: '3.0.0',
     info: {
-        title: 'Express API with Swagger',
+        title: 'CRM API',
         version: '1.0.0',
-        description: 'This is a simple CRUD API application made with Express and documented with Swagger',
+        description: 'This is a CRUD API application made with Express and documented with Swagger',
     },
     servers: [
         {

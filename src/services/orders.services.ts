@@ -160,12 +160,11 @@ export const getOrderStatsByManagerService = async () => {
     }
 };
 
-export const getAllCommentsService = async () => {
-    try {
-        const ordersWithComments = await Order.find().select('comments');
-        return ordersWithComments.reduce((acc, order) => acc.concat(order.comments), []);
-    } catch (error) {
-        console.error('Error fetching comments:', error);
-        throw error;
+
+export const findCommentsByOrderId = async (orderId: string) => {
+    const order = await Order.findById(orderId).select('comments');
+    if (!order) {
+        throw new Error('Order not found');
     }
+    return order.comments;
 };

@@ -1,7 +1,7 @@
 import {Request, Response} from 'express';
 import * as OrdersService from '../services/orders.services';
 import {
-    getAllCommentsService,
+    findCommentsByOrderId,
     getCourseTypeStatisticsService,
     getOrdersByMonth, getOrderStatsByManagerService,
     getStatusStatisticsService,
@@ -152,12 +152,12 @@ export const getOrderStatsByManagerController = async (req: Request, res: Respon
     }
 };
 
-export const getAllComments = async (req: Request, res: Response) => {
+export const getCommentsByOrderId = async (req: Request, res: Response) => {
     try {
-        const comments = await getAllCommentsService();
-        res.json(comments);
+        const { orderId } = req.params;
+        const comments = await findCommentsByOrderId(orderId);
+        res.status(200).json(comments);
     } catch (error) {
-        console.error('Failed to get comments:', error);
-        res.status(500).json({ message: 'Error fetching comments' });
+        res.status(404).json({ message: error.message });
     }
 };
