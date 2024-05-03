@@ -22,7 +22,7 @@ const orderUpdateValidationSchema = Joi.object({
     course: Joi.string().valid('QACX', 'PCX', 'JSCX', 'JCX', 'FS', 'FE').allow('', null).optional(),
     course_format: Joi.string().allow('', null).optional(),
     course_type: Joi.string().valid('vip', 'pro', 'minimal', 'premium', 'incubator').allow('', null).optional(),
-    sum: Joi.number().valid('true', 'false').allow(null).optional(),
+    sum: Joi.number().allow(null).optional(),
     already_paid: Joi.boolean().allow(null, '').optional(),
     created_at: Joi.date().optional(),
     utm: Joi.string().allow('', null).optional(),
@@ -56,7 +56,6 @@ export const validateOrderUpdate = validateOrderInput(orderUpdateValidationSchem
 export const checkUserIsManagerOfOrder = async (req: NewRequest, res: Response, next: NextFunction) => {
     const orderId = req.params.orderId;
     const userId = req.user?._id;
-    const userRole = req.user?.role;
     console.log("OrderId:", orderId, "UserId:", userId);
     try {
         const order = await Order.findById(orderId);
@@ -65,7 +64,7 @@ export const checkUserIsManagerOfOrder = async (req: NewRequest, res: Response, 
             return res.status(404).send('Order not found');
         }
 
-        if (order.manager === userId || userRole === 'admin') {
+        if (order.manager === userId ) {
             req.order = order;
             next();
         } else {
@@ -80,7 +79,6 @@ export const checkUserIsManagerOfOrder = async (req: NewRequest, res: Response, 
 export const canAddCommentToOrder = async (req: NewRequest, res: Response, next: NextFunction) => {
     const orderId = req.params.id;
     const userId = req.user?._id;
-    const userRole = req.user?.role;
     console.log("OrderId:", orderId, "UserId:", userId);
 
     try {
@@ -92,7 +90,7 @@ export const canAddCommentToOrder = async (req: NewRequest, res: Response, next:
             return res.status(404).send('Order not found');
         }
 
-        if (!order.manager || order.manager === "" || order.manager === userId || userRole === 'admin') {
+        if (!order.manager || order.manager === "" || order.manager === userId ) {
             req.order = order;
             next();
         } else {

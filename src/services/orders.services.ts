@@ -9,8 +9,10 @@ import {
     repoGetOrdersByMonth
 } from "../repositories/orders.repository";
 
+import { Types } from 'mongoose';
+
 export const addCommentToOrder = async (
-    orderId: mongoose.Types.ObjectId | string,
+    orderId: Types.ObjectId | string,
     comment: IComment,
     userId: string,
     managerName: string
@@ -21,15 +23,35 @@ export const addCommentToOrder = async (
         if (!order) {
             return null;
         }
-        const update = {
-            $push: {comments: comment},
-            ...(!order.manager && {$set: {manager: userId, managerName: managerName}})
+
+        const update: {
+            $push: { comments: IComment };
+            $set?: { manager?: string; managerName?: string; status?: string };
+        } = {
+            $push: { comments: comment }
         };
-        return await Order.findByIdAndUpdate(orderId, update, {new: true});
+
+        if (order.manager === " ") {
+            update.$set = {
+                ...(update.$set || {}),
+                manager: userId,
+                managerName: managerName
+            };
+        }
+
+        if (order.status === " " || order.status === null) {
+            update.$set = {
+                ...(update.$set || {}),
+                status: 'in work'
+            };
+        }
+
+        return await Order.findByIdAndUpdate(orderId, update, { new: true });
     } catch (error) {
         throw error;
     }
 };
+
 
 
 export const deleteCommentFromOrder = async (orderId: mongoose.Types.ObjectId | string, commentId: string): Promise<IOrder | null> => {
@@ -91,6 +113,10 @@ export const updateOrderById = async (
             updateData.manager = "";
         }
 
+        if (updateData.status === null || updateData.status === 'new') {
+            updateData.status = 'in work';
+        }
+
         const updatedOrder = await Order.findOneAndUpdate(
             {
                 _id: orderId,
@@ -106,10 +132,10 @@ export const updateOrderById = async (
 
         return updatedOrder;
     } catch (error) {
-
         throw error;
     }
 };
+
 
 export const getStatusStatisticsService = async (): Promise<any> => {
     try {

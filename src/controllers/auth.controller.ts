@@ -10,7 +10,6 @@ import {
 import {NewRequest} from "../types/request.types";
 import {CookieOptions} from 'express';
 
-
 export const register = async (req: Request, res: Response) => {
     try {
         const {name, email, lastname} = req.body;
